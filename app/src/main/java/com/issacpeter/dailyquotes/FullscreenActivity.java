@@ -14,8 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.issacpeter.dailyquotes.data.QuotesListResponse;
+import com.issacpeter.dailyquotes.data.Urls;
 import com.issacpeter.dailyquotes.remote.QuotesService;
+
+import org.json.JSONArray;
 
 import java.util.Random;
 
@@ -38,9 +42,9 @@ public class FullscreenActivity extends AppCompatActivity {
     static int r, g, b;
 
     private TextView mContentView, mBottomContent;
-    private ImageView mPlayButton, icon;
+    private ImageView mPlayButton, icon, bg;
     private View mContainer;
-
+    private static final String UNSPLASH_CLIENT_ID = "8268ddb9261c572d119e41043166b5d02917f17169aa95e256d2a79b8d950b75";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +71,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mContentView = (TextView) findViewById(R.id.fullscreen_content);
         mPlayButton = (ImageView) findViewById(R.id.play);
         icon = (ImageView) findViewById(R.id.icon);
+        bg = (ImageView) findViewById(R.id.bg);
 
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -83,7 +88,6 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onClick(View view) {
 //                toggle();
                 getQuotes(cat, count);
-                getQuotesBG();
             }
         });
 
@@ -117,8 +121,10 @@ public class FullscreenActivity extends AppCompatActivity {
                     mContentView.setText("\""+quote+"\"");
                     mBottomContent.setText("-"+author);
                     mContainer.setBackgroundColor(getColor());
-                    mContentView.setTextColor(getContrastColor());
-                    mBottomContent.setTextColor(getContrastColor());
+//                    mContentView.setTextColor(getContrastColor());
+//                    mBottomContent.setTextColor(getContrastColor());
+                    mContentView.setTextColor(Color.WHITE);
+                    mBottomContent.setTextColor(Color.WHITE);
                     /*
                     if (page==1) {
                         mAdapter.updateProducts(response.body().getData());
@@ -127,7 +133,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     }*/
                     Log.d("FullScreenActivity", "quotes loaded from API\n");
 //                    Toast.makeText(FullscreenActivity.this, "quotes loaded from API", Toast.LENGTH_SHORT).show();
-
+                    getQuotesBG();
                 }else {
                     int statusCode  = response.code();
                     Log.v("Notsuccessful response", response.toString());
@@ -148,7 +154,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
     public QuotesListResponse getQuotesBG(){
 
-        mServiceBG.getQuotesBG().enqueue(new Callback<QuotesListResponse>() {
+        mServiceBG.getQuotesBG(UNSPLASH_CLIENT_ID, 720, 1280).enqueue(new Callback<QuotesListResponse>() {
             @Override
             public void onResponse(Call<QuotesListResponse> call, Response<QuotesListResponse> response) {
                 if(response.isSuccessful()) {
@@ -166,6 +172,12 @@ public class FullscreenActivity extends AppCompatActivity {
                     } else {
                         mAdapter.addProducts(response.body().getData());
                     }*/
+                    Urls urls = response.body().getUrls();
+
+                    Glide.with(FullscreenActivity.this)
+                            .load(urls.getCustom())
+                            .into(bg);
+
                     Log.d("FullScreenActivity BG", "quotes loaded from API\n"+response.body());
 //                    Toast.makeText(FullscreenActivity.this, "quotes loaded from API", Toast.LENGTH_SHORT).show();
 
@@ -200,7 +212,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
     public static int getContrastColor() {
         double y = (299 * r + 587 * g + 114 * b) / 1000;
-        return y >= 128 ? R.color.colorBlack : R.color.colorWhite;
+        return y >= 128 ? R.color.colorWhite : R.color.colorBlack;
     }
 
     public void playAndPause(){

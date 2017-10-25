@@ -28,8 +28,9 @@ public interface QuotesService {
     Call<QuotesListResponse> getQuotes(@Query("cat") String cat, @Query("count") int count);
 
 
-    @Headers({"Accept: application/json"})
-    @GET("/")
-    Call<QuotesListResponse> getQuotesBG();
+    @Headers({"Accept: application/json",
+    "Accept-Version: v1"})
+    @GET("/photos/random")
+    Call<QuotesListResponse> getQuotesBG(@Query("client_id") String client_id, @Query("w") int w, @Query("h") int h);
 
 }
