@@ -33,12 +33,12 @@ public class FullscreenActivity extends AppCompatActivity {
     String cat;
     int count;
     boolean isPlaying=false;
-    QuotesService mService;
+    QuotesService mService, mServiceBG;
     String quote, author, category;
     static int r, g, b;
 
     private TextView mContentView, mBottomContent;
-    private ImageView mPlayButton;
+    private ImageView mPlayButton, icon;
     private View mContainer;
 
     @Override
@@ -51,6 +51,7 @@ public class FullscreenActivity extends AppCompatActivity {
         cat = "famous";
         count = 1;
         mService = ApiUtils.getQuotesService();
+        mServiceBG = ApiUtils.getQuotesBGService();
 
         // Hide UI first
         ActionBar actionBar = getSupportActionBar();
@@ -65,6 +66,7 @@ public class FullscreenActivity extends AppCompatActivity {
         mContainer = findViewById(R.id.container);
         mContentView = (TextView) findViewById(R.id.fullscreen_content);
         mPlayButton = (ImageView) findViewById(R.id.play);
+        icon = (ImageView) findViewById(R.id.icon);
 
         mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
@@ -74,13 +76,14 @@ public class FullscreenActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         mBottomContent = (TextView) findViewById(R.id.bottom_content);
 
-        getQuotes(cat, count);
+//        getQuotes(cat, count);
         // Set up the user interaction to manually show or hide the system UI.
         mContentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                toggle();
                 getQuotes(cat, count);
+                getQuotesBG();
             }
         });
 
@@ -108,6 +111,7 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<QuotesListResponse> call, Response<QuotesListResponse> response) {
                 if(response.isSuccessful()) {
+                    icon.setVisibility(View.GONE);
                     quote = response.body().getQuote();
                     author = response.body().getAuthor();
                     mContentView.setText("\""+quote+"\"");
@@ -136,6 +140,47 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onFailure(Call<QuotesListResponse> call, Throwable t) {
 
                 Log.d("FullScreenActivity ", "error loading from API "+t);
+                t.printStackTrace();
+            }
+        });
+        return q;
+    }
+
+    public QuotesListResponse getQuotesBG(){
+
+        mServiceBG.getQuotesBG().enqueue(new Callback<QuotesListResponse>() {
+            @Override
+            public void onResponse(Call<QuotesListResponse> call, Response<QuotesListResponse> response) {
+                if(response.isSuccessful()) {
+//                    icon.setVisibility(View.GONE);
+//                    quote = response.body().getQuote();
+//                    author = response.body().getAuthor();
+//                    mContentView.setText("\""+quote+"\"");
+//                    mBottomContent.setText("-"+author);
+//                    mContainer.setBackgroundColor(getColor());
+//                    mContentView.setTextColor(getContrastColor());
+//                    mBottomContent.setTextColor(getContrastColor());
+                    /*
+                    if (page==1) {
+                        mAdapter.updateProducts(response.body().getData());
+                    } else {
+                        mAdapter.addProducts(response.body().getData());
+                    }*/
+                    Log.d("FullScreenActivity BG", "quotes loaded from API\n"+response.body());
+//                    Toast.makeText(FullscreenActivity.this, "quotes loaded from API", Toast.LENGTH_SHORT).show();
+
+                }else {
+                    int statusCode  = response.code();
+                    Log.v("Notsuccessful  BG ", response.toString());
+                    Toast.makeText(FullscreenActivity.this, "Notsuccessful response BG "+response, Toast.LENGTH_SHORT).show();
+                    // handle request errors depending on status code
+                }
+            }
+
+            @Override
+            public void onFailure(Call<QuotesListResponse> call, Throwable t) {
+
+                Log.d("FullScreenActivity BG ", "error loading from API "+t);
                 t.printStackTrace();
             }
         });
