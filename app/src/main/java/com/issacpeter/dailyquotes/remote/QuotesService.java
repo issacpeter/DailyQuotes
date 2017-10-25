@@ -27,4 +27,9 @@ public interface QuotesService {
     @GET("/")
     Call<QuotesListResponse> getQuotes(@Query("cat") String cat, @Query("count") int count);
 
+
+    @Headers({"Accept: application/json"})
+    @GET("/")
+    Call<QuotesListResponse> getQuotesBG();
+
 }
