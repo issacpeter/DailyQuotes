@@ -87,7 +87,7 @@ public class FullscreenActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 //                toggle();
-                getQuotes(cat, count);
+                getQuotesBG();
             }
         });
 
@@ -133,7 +133,7 @@ public class FullscreenActivity extends AppCompatActivity {
                     }*/
                     Log.d("FullScreenActivity", "quotes loaded from API\n");
 //                    Toast.makeText(FullscreenActivity.this, "quotes loaded from API", Toast.LENGTH_SHORT).show();
-                    getQuotesBG();
+
                 }else {
                     int statusCode  = response.code();
                     Log.v("Notsuccessful response", response.toString());
@@ -180,7 +180,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
                     Log.d("FullScreenActivity BG", "quotes loaded from API\n"+response.body());
 //                    Toast.makeText(FullscreenActivity.this, "quotes loaded from API", Toast.LENGTH_SHORT).show();
-
+                    getQuotes(cat, count);
                 }else {
                     int statusCode  = response.code();
                     Log.v("Notsuccessful  BG ", response.toString());
