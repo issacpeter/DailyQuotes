@@ -15,6 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.issacpeter.dailyquotes.data.QuotesListResponse;
 import com.issacpeter.dailyquotes.data.Urls;
 import com.issacpeter.dailyquotes.remote.QuotesService;
@@ -154,7 +157,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
     public QuotesListResponse getQuotesBG(){
 
-        mServiceBG.getQuotesBG(UNSPLASH_CLIENT_ID, 720, 1280).enqueue(new Callback<QuotesListResponse>() {
+        mServiceBG.getQuotesBG(UNSPLASH_CLIENT_ID, 360, 640).enqueue(new Callback<QuotesListResponse>() {
             @Override
             public void onResponse(Call<QuotesListResponse> call, Response<QuotesListResponse> response) {
                 if(response.isSuccessful()) {
@@ -174,13 +177,27 @@ public class FullscreenActivity extends AppCompatActivity {
                     }*/
                     Urls urls = response.body().getUrls();
 
+                    String customUrl = urls.getCustom();
+
                     Glide.with(FullscreenActivity.this)
-                            .load(urls.getCustom())
+                            .load(customUrl)
+                            .listener(new RequestListener<String, GlideDrawable>() {
+                                @Override
+                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                    getQuotes(cat, count);
+                                    return false;
+                                }
+                            })
                             .into(bg);
 
                     Log.d("FullScreenActivity BG", "quotes loaded from API\n"+response.body());
 //                    Toast.makeText(FullscreenActivity.this, "quotes loaded from API", Toast.LENGTH_SHORT).show();
-                    getQuotes(cat, count);
+
                 }else {
                     int statusCode  = response.code();
                     Log.v("Notsuccessful  BG ", response.toString());
