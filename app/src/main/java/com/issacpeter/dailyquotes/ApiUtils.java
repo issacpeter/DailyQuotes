@@ -16,7 +16,7 @@ public class ApiUtils {
     public static QuotesService getQuotesService() {
         return RetrofitClient.getClient(BASE_URL_QUOTES).create(QuotesService.class);
     }
-    public static final String BASE_URL_BG = "https://source.unsplash.com/random/720x1280";
+    public static final String BASE_URL_BG = "https://api.unsplash.com/";
 
     public static QuotesService getQuotesBGService() {
         return RetrofitClient.getClient(BASE_URL_BG).create(QuotesService.class);

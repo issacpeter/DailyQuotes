@@ -20,6 +20,9 @@ public class QuotesListResponse {
     @SerializedName("category")
     @Expose
     private String category;
+    @SerializedName("urls")
+    @Expose
+    private Urls urls;
 
     public String getQuote() {
         return quote;
@@ -43,5 +46,13 @@ public class QuotesListResponse {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public Urls getUrls() {
+        return urls;
+    }
+
+    public void setUrls(Urls urls) {
+        this.urls = urls;
     }
 }
