@@ -1,7 +1,7 @@
 <resources>
-    <string name="app_name">Paragons Of Virtue</string>
+    <string name="app_name">QuotesPad</string>
 
     <string name="dummy_button">NEXT</string>
-    <string name="dummy_content">PARAGONS\nOF\nVIRTUE</string>
+    <string name="dummy_content">QUOTESPAD</string>
     <string name="bottom_content">- ISSAC PETER</string>
 </resources>
